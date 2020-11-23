@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Row, Col, ListGroup, Image, Card } from "react-bootstrap";
+import { Row, Col, ListGroup, Image, Card } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Loader from "../components/Loader";
@@ -11,14 +11,17 @@ const OrderScreen = ({ match }) => {
   const dispatch = useDispatch();
 
   const orderDetails = useSelector((state) => state.orderCreate);
-  const userInfo = useSelector((state) => state.userLogin.userInfo);
-  const { name, email } = userInfo;
   const { order, loading, error } = orderDetails;
 
+  const userLogin = useSelector((state) => state.userLogin.userInfo);
+  const { name, email } = userLogin;
+
   if (!loading) {
+    //   Calculate prices
     const addDecimals = (num) => {
       return (Math.round(num * 100) / 100).toFixed(2);
     };
+
     order.itemsPrice = addDecimals(
       order.orderItems.reduce((acc, item) => acc + item.price * item.qty, 0),
     );
@@ -41,11 +44,10 @@ const OrderScreen = ({ match }) => {
             <ListGroup.Item>
               <h2>Shipping</h2>
               <p>
-                <strong>Name: </strong>
-                {name}
+                <strong>Name: </strong> {name}
               </p>
               <p>
-                <strong>Email: </strong>
+                <strong>Email: </strong>{" "}
                 <a href={`mailto:${email}`}>{email}</a>
               </p>
               <p>
@@ -55,7 +57,9 @@ const OrderScreen = ({ match }) => {
                 {order.shippingAddress.country}
               </p>
               {order.isDelivered ? (
-                <Message variant='success'>Delivered on {order.deliveredAt}</Message>
+                <Message variant='success'>
+                  Delivered on {order.deliveredAt}
+                </Message>
               ) : (
                 <Message variant='danger'>Not Delivered</Message>
               )}
