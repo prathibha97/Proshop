@@ -47,8 +47,8 @@ export const cartReducer = (
       };
     case CART_ITEM_RESET:
       return {
+        ...state,
         cartItems: [],
-        shippingAddress: {},
       };
     default:
       return state;
